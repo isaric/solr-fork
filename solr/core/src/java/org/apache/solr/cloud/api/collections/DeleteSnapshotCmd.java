@@ -39,6 +39,7 @@ import org.apache.solr.common.params.CoreAdminParams;
 import org.apache.solr.common.params.CoreAdminParams.CoreAdminAction;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.common.util.Utils;
 import org.apache.solr.core.snapshots.CollectionSnapshotMetaData;
 import org.apache.solr.core.snapshots.CollectionSnapshotMetaData.CoreSnapshotMetaData;
@@ -69,7 +70,7 @@ public class DeleteSnapshotCmd implements CollApiCmds.CollectionApiCommand {
       collectionName = extCollectionName;
     }
     String commitName = message.getStr(CoreAdminParams.COMMIT_NAME);
-    NamedList<Object> shardRequestResults = new NamedList<>();
+    NamedList<Object> shardRequestResults = new SimpleOrderedMap<>();
     ShardHandler shardHandler = ccc.newShardHandler();
     SolrZkClient zkClient = ccc.getZkStateReader().getZkClient();
 

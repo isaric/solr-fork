@@ -44,6 +44,7 @@ import org.apache.solr.common.cloud.ZkStateReader;
 import org.apache.solr.common.util.ExecutorUtil;
 import org.apache.solr.common.util.IOUtils;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.common.util.SolrNamedThreadFactory;
 import org.apache.solr.common.util.StrUtils;
 import org.apache.solr.common.util.Utils;
@@ -344,7 +345,7 @@ public class OverseerTaskProcessor implements SolrInfoBean, Runnable, Closeable 
               // action. In that case, fail the task immediately rather than retrying.
               log.error(
                   "Error occurred while trying to acquire lock for task [{}]", head.getId(), e);
-              NamedList<Object> errResp = new NamedList<>();
+              NamedList<Object> errResp = new SimpleOrderedMap<>();
               errResp.add("exception", e.getMessage());
               OverseerSolrResponse response = new OverseerSolrResponse(errResp);
               if (asyncId != null) {

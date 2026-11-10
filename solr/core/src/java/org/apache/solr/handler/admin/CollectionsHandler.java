@@ -150,6 +150,7 @@ import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.params.RequiredSolrParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.common.util.StrUtils;
 import org.apache.solr.common.util.Utils;
 import org.apache.solr.core.CloudConfig;
@@ -365,7 +366,7 @@ public class CollectionsHandler extends RequestHandlerBase implements Permission
       m = m.plus(additionalProps);
       if (adminCmdContext.getAsyncId() != null) {
         String asyncId = adminCmdContext.getAsyncId();
-        NamedList<Object> r = new NamedList<>();
+        NamedList<Object> r = new SimpleOrderedMap<>();
 
         if (zkController.claimAsyncId(asyncId)) {
           boolean success = false;
@@ -745,7 +746,7 @@ public class CollectionsHandler extends RequestHandlerBase implements Permission
     DISTRIBUTEDAPIPROCESSING_OP(
         DISTRIBUTEDAPIPROCESSING,
         (req, rsp, h) -> {
-          NamedList<Object> results = new NamedList<>();
+          NamedList<Object> results = new SimpleOrderedMap<>();
           boolean isDistributedApi =
               h.coreContainer.getZkController().getDistributedCommandRunner().isPresent();
           results.add("isDistributedApi", isDistributedApi);
@@ -965,7 +966,7 @@ public class CollectionsHandler extends RequestHandlerBase implements Permission
           final ListCollectionSnapshotsResponse response =
               listCollectionSnapshotsAPI.listSnapshots(req.getParams().get(COLLECTION_PROP));
 
-          NamedList<Object> snapshots = new NamedList<>();
+          NamedList<Object> snapshots = new SimpleOrderedMap<>();
           for (Object meta : response.snapshots.values()) {
             final var metaTyped = (CollectionSnapshotMetaData) meta;
             snapshots.add(metaTyped.getName(), metaTyped.toNamedList());

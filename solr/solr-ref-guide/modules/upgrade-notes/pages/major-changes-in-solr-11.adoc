@@ -42,6 +42,29 @@ bin/solr start -Dsolr.node.roles=data:on,overseer:preferred
 A node started this way asks the Overseer to re-run its node prioritization, so a preferred node takes over without waiting for the current Overseer to restart.
 Note that node roles are fixed for the lifetime of a node: unlike `ADDROLE`, they cannot be changed on a running node.
 
+== Response Format
+
+=== More response sections are JSON objects regardless of json.nl
+
+Solr builds many response sections as a `NamedList`, which the JSON response writer renders according to the `json.nl` parameter (by default as a flat array of alternating names and values).
+Sections whose names never repeat are now built as a `SimpleOrderedMap` instead, which the JSON writer always renders as a JSON object, exactly as `json.nl=map` did before.
+Clients that read these sections with the default `json.nl=flat` (or with `arrarr` / `arrmap`) must now read a JSON object; clients using `json.nl=map`, XML, or SolrJ (javabin) see no change.
+The affected sections are:
+
+* `OVERSEERSTATUS`: `overseer_operations` and `collection_operations` are objects keyed by operation.
+* `LISTSNAPSHOTS` (v1): each snapshot and its per-core entries are objects.
+* `DELETEBACKUP` with `purgeUnused`: the `deleted` summary (`numBackupIds`, `numShardBackupIds`, `numIndexFiles`) is an object.
+* Replication handler: each entry of `commits` and the details of a `deletebackup` (named snapshot) command are objects.
+* Luke request handler: a field's `histogram` and `topTerms` are objects.
+* MoreLikeThis handler: `interestingTerms` with `mlt.interestingTerms=details` is an object keyed by term.
+* MoreLikeThis component in SolrCloud: `moreLikeThis` is an object keyed by document, as it already was on a single node.
+* Core Admin `SPLIT`: the `response` section (`timing`, `failed`) is an object.
+* Managed resources (`/schema/analysis/...`): `initArgs` is an object.
+* The `logit` section of the `{!tlogit}` query parser and the `featuredTerms` and `docFreq` sections of the `{!igain}` query parser are objects.
+* A `debug` section on an empty result (`explain` is then empty) is an object, as the normal `debug` section already was.
+
+Sections designed around repeated or user-controlled keys, such as classic facet counts (`facet_fields`, `facet_ranges`, `facet_pivot`), the terms component, spellcheck suggestions and collations, term vectors, and `sort_values`, are unchanged and still follow `json.nl`.
+
 == SolrJ
 
 === NamedList is a sealed class

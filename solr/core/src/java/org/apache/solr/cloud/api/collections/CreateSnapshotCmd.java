@@ -42,6 +42,7 @@ import org.apache.solr.common.params.CoreAdminParams;
 import org.apache.solr.common.params.CoreAdminParams.CoreAdminAction;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.snapshots.CollectionSnapshotMetaData;
 import org.apache.solr.core.snapshots.CollectionSnapshotMetaData.CoreSnapshotMetaData;
 import org.apache.solr.core.snapshots.CollectionSnapshotMetaData.SnapshotStatus;
@@ -93,7 +94,7 @@ public class CreateSnapshotCmd implements CollApiCmds.CollectionApiCommand {
         collectionName,
         commitName);
 
-    NamedList<Object> shardRequestResults = new NamedList<>();
+    NamedList<Object> shardRequestResults = new SimpleOrderedMap<>();
     Map<String, Slice> shardByCoreName = new HashMap<>();
     ShardHandler shardHandler = ccc.newShardHandler();
 

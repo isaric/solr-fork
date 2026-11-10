@@ -502,7 +502,7 @@ public class ReplicationHandler extends RequestHandlerBase
 
     for (IndexCommit c : commits.values()) {
       try {
-        NamedList<Object> nl = new NamedList<>();
+        NamedList<Object> nl = new SimpleOrderedMap<>();
         nl.add("indexVersion", IndexDeletionPolicyWrapper.getCommitTimestamp(c));
         nl.add(GENERATION, c.getGeneration());
         List<String> commitList = new ArrayList<>(c.getFileNames().size());
@@ -1441,7 +1441,7 @@ public class ReplicationHandler extends RequestHandlerBase
 
     if (!enableFollower && !enableLeader) {
       enableLeader = true;
-      leader = new NamedList<>();
+      leader = new SimpleOrderedMap<>();
     }
 
     if (enableLeader) {

@@ -1,0 +1,18 @@
+# See https://github.com/apache/solr/blob/main/dev-docs/changelog.adoc
+
+title: >
+  Solr core now builds response sections whose keys never repeat as a SimpleOrderedMap instead of a
+  NamedList, so the JSON response writer renders them as JSON objects regardless of json.nl. Affected:
+  OVERSEERSTATUS operation stats, LISTSNAPSHOTS entries, the DELETEBACKUP purge summary, replication
+  "commits" and named-snapshot deletion details, Luke "histogram" and "topTerms", MoreLikeThis
+  "interestingTerms" (details) and the SolrCloud "moreLikeThis" section, Core Admin SPLIT details,
+  managed-resource "initArgs", the {!tlogit} "logit" and {!igain} "featuredTerms"/"docFreq" sections,
+  and the "debug" section of an empty result. Clients using json.nl=map, XML or SolrJ see no change.
+  Classic facet counts, the terms component, spellcheck, term vectors and sort_values are unchanged.
+type: changed
+authors:
+  - name: Ivan Šarić
+    nick: isaric
+links:
+  - name: SOLR-18612
+    url: https://issues.apache.org/jira/browse/SOLR-18612

@@ -53,6 +53,7 @@ import org.apache.solr.common.params.CoreAdminParams;
 import org.apache.solr.common.util.ExecutorUtil;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.Pair;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.common.util.SolrNamedThreadFactory;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.logging.MDCLoggingContext;
@@ -318,7 +319,7 @@ public class DistributedCollectionConfigSetCommandRunner {
     } else {
       // Async calls do not wait for the command to finish but get instead back the async id (that
       // they just sent...)
-      NamedList<Object> resp = new NamedList<>();
+      NamedList<Object> resp = new SimpleOrderedMap<>();
       resp.add(CoreAdminParams.REQUESTID, adminCmdContext.getAsyncId());
       return new OverseerSolrResponse(resp);
     }

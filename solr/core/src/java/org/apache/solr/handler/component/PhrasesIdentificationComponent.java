@@ -693,10 +693,10 @@ public class PhrasesIdentificationComponent extends SearchComponent {
         // so the coordinating node can fail fast when mergingthe results
         data.add("checksum", p.getChecksum());
         if (p.is_indexed) {
-          data.add("ttf", new NamedList<Object>(p.phrase_ttf));
-          data.add("df", new NamedList<Object>(p.phrase_df));
+          data.add("ttf", p.phrase_ttf);
+          data.add("df", p.phrase_df);
         }
-        data.add("conj_dc", new NamedList<Object>(p.subTerms_conjunctionCounts));
+        data.add("conj_dc", p.subTerms_conjunctionCounts);
 
         results.add(data);
       }
@@ -730,16 +730,13 @@ public class PhrasesIdentificationComponent extends SearchComponent {
                 "phrase #" + i + " in shard data had invalid checksum");
           }
           if (p.is_indexed) {
-            for (Map.Entry<String, Long> ttf : (NamedList<Long>) data.get("ttf")) {
-              p.phrase_ttf.merge(ttf.getKey(), ttf.getValue(), Long::sum);
-            }
-            for (Map.Entry<String, Long> df : (NamedList<Long>) data.get("df")) {
-              p.phrase_df.merge(df.getKey(), df.getValue(), Long::sum);
-            }
+            ((Map<String, Long>) data.get("ttf"))
+                .forEach((k, v) -> p.phrase_ttf.merge(k, v, Long::sum));
+            ((Map<String, Long>) data.get("df"))
+                .forEach((k, v) -> p.phrase_df.merge(k, v, Long::sum));
           }
-          for (Map.Entry<String, Long> conj_dc : (NamedList<Long>) data.get("conj_dc")) {
-            p.subTerms_conjunctionCounts.merge(conj_dc.getKey(), conj_dc.getValue(), Long::sum);
-          }
+          ((Map<String, Long>) data.get("conj_dc"))
+              .forEach((k, v) -> p.subTerms_conjunctionCounts.merge(k, v, Long::sum));
         } catch (RuntimeException e) {
           throw new SolrException(
               SolrException.ErrorCode.SERVER_ERROR,

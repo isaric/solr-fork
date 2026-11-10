@@ -29,6 +29,7 @@ import org.apache.solr.common.cloud.ZkNodeProps;
 import org.apache.solr.common.cloud.ZkStateReader;
 import org.apache.solr.common.params.ConfigSetParams;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CoreContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,7 @@ public class OverseerConfigSetMessageHandler implements OverseerMessageHandler {
 
   @Override
   public OverseerSolrResponse processMessage(ZkNodeProps message, String operation, Lock lock) {
-    NamedList<Object> results = new NamedList<>();
+    NamedList<Object> results = new SimpleOrderedMap<>();
     try {
       if (!operation.startsWith(CONFIGSETS_ACTION_PREFIX)) {
         throw new SolrException(

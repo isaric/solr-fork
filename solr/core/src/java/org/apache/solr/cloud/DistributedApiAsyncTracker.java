@@ -261,7 +261,7 @@ public class DistributedApiAsyncTracker {
       // Node crash has removed the ephemeral node, but the command did not complete execution (or
       // didn't even start it, who knows). We have a failure to report though so let's create a
       // reasonable return response.
-      NamedList<Object> results = new NamedList<>();
+      NamedList<Object> results = new SimpleOrderedMap<>();
       SimpleOrderedMap<Object> nl = new SimpleOrderedMap<>();
       nl.add(
           "msg",

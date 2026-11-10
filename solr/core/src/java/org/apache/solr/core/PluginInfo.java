@@ -32,6 +32,7 @@ import java.util.Map;
 import org.apache.solr.common.ConfigNode;
 import org.apache.solr.common.MapWriter;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.util.DOMConfigNode;
 import org.w3c.dom.Node;
 
@@ -129,14 +130,14 @@ public class PluginInfo implements MapWriter {
       if (value instanceof List<?> list) {
         if (!list.isEmpty() && list.get(0) instanceof Map) { // this is a subcomponent
           for (Object o : list) {
-            if (o instanceof Map) o = new NamedList<>((Map) o);
+            if (o instanceof Map) o = toNamedList((Map) o);
             initArgs.add(entry.getKey(), o);
           }
         } else {
           initArgs.add(entry.getKey(), value);
         }
       } else {
-        if (value instanceof Map) value = new NamedList((Map) value);
+        if (value instanceof Map) value = toNamedList((Map) value);
         initArgs.add(entry.getKey(), value);
       }
     }
@@ -195,10 +196,10 @@ public class PluginInfo implements MapWriter {
   @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public void writeMap(EntryWriter ew) throws IOException {
-    // Direct forEach(ew::putNoEx) does not work: attributes is declared Map<String, String> but
-    // the PluginInfo(String, Map<String, Object>) constructor assigns it via raw types, so values
-    // may not be Strings. The bridge method generated for forEach would CCE on non-String values.
-    new NamedList<>(attributes).writeMap(ew);
+    // attributes is declared Map<String, String> but the PluginInfo(String, Map<String, Object>)
+    // constructor assigns it via raw types, so values may not be Strings; iterate it untyped so no
+    // bridge method casts them.
+    ((Map<?, ?>) attributes).forEach((k, v) -> ew.putNoEx((String) k, v));
     if (initArgs != null) {
       initArgs.asMap(3).forEach((k, v) -> ew.putNoEx((String) k, v));
     }
@@ -238,8 +239,14 @@ public class PluginInfo implements MapWriter {
     return result;
   }
 
+  private static NamedList<Object> toNamedList(Map<String, Object> map) {
+    NamedList<Object> nl = new SimpleOrderedMap<>();
+    nl.addAll(map);
+    return nl;
+  }
+
   public static final PluginInfo EMPTY_INFO =
-      new PluginInfo("", Map.of(), new NamedList<>(), List.of());
+      new PluginInfo("", Map.of(), new SimpleOrderedMap<>(), List.of());
 
   private static final HashSet<String> NL_TAGS =
       new HashSet<>(asList("lst", "arr", "bool", "str", "int", "long", "float", "double"));

@@ -311,10 +311,10 @@ Because we did not also specify `mlt.boost`, the boost values shown for the inte
         "genre_s":"fantasy",
         "_version_":1693062911095734272}]
   },
-  "interestingTerms":[
-    "author:r.r",1.0,
-    "author:george",1.0,
-    "author:martin",1.0]}
+  "interestingTerms":{
+    "author:r.r":1.0,
+    "author:george":1.0,
+    "author:martin":1.0}}
 ----
 
 If we had not requested `mlt.match.include=true`, the response would not have included the `match` section.
